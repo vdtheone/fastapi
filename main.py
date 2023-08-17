@@ -9,80 +9,42 @@ from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 app = FastAPI()
 
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
-class User(BaseModel):
-   username:str
-   password:str
-
-# @app.post("/submit/", response_model=User)
-# async def submit(nm: str = Form(...), pwd: str = Form(...)):
-#    return User(username=nm, password=pwd)
-
-
-@app.get("/login/", response_class=HTMLResponse)
-async def login(request: Request):
-   return templates.TemplateResponse("login.html", {"request": request})
-
-
-@app.post("/submit/")
-async def submit(nm: str = Form(...), pwd: str = Form(...)):
-   return {"username": nm, "password": pwd}
-
-
-@app.get("/upload/", response_class=HTMLResponse)
-async def upload(request: Request):
-   return templates.TemplateResponse("uploadfile.html", {"request": request})
-
-
-@app.post("/uploader/")
-async def create_upload_file(file: UploadFile = File(...)):
-   with open("destination.txt", "wb") as buffer:
-      shutil.copyfileobj(file.file, buffer)
-   return {"filename": file.filename}
-
-
-@app.post("/cookie/")
-def create_cookie():
-   content = {"message": "cookie set"}
-   response = JSONResponse(content=content)
-   response.set_cookie(key="username", value="admin")
-   return response
-
-
-@app.get("/readcookie/")
-async def read_cookie(username: str = Cookie(None)):
-   return {"username": username}
-
-
-@app.get("/headers/")
-async def read_header(accept_language: Optional[str] = Header(None)):
-   return {"Accept-Language": accept_language} 
-
-
-@app.get("/rspheader/")
-def set_rsp_headers():
-   content = {"message": "Hello World"}
-   headers = {"X-Web-Framework": "FastAPI", "Content-Language": "en-US"}
-   return JSONResponse(content=content, headers=headers)
-
-
-class student(BaseModel):
+data = []
+class Book(BaseModel):
    id: int
-   name :str = Field(None, title="name of student", max_length=10)
-   marks: List[int] = []
-   percent_marks: float
-   
-class percent(BaseModel):
-   id:int
-   name :str = Field(None, title="name of student", max_length=10)
-   percent_marks: float
+   title: str
+   author: str
+   publisher: str
 
-@app.post("/marks", response_model=percent)
-async def get_percent(s1:student):
-   s1.percent_marks=sum(s1.marks)/2
-   return s1
+
+@app.post("/book")
+def add_book(book: Book):
+   data.append(book.model_dump())
+   return data
+
+
+@app.get("/list")
+def get_books():
+   return data
+
+
+@app.get("/book/{id}")
+def get_book(id: int):
+   id = id - 1
+   return data[id]
+
+
+@app.put("/book/{id}")
+def add_book(id: int, book: Book):
+   data[id-1] = book
+   return data
+
+
+@app.delete("/book/{id}")
+def delete_book(id: int):
+   data.pop(id-1)
+   return data
 
 
 
