@@ -1,0 +1,26 @@
+Error = File E:\Internship\fastapi\env\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled on  
+this system.
+
+Command = Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+
+
+uvicorn - development server
+
+ASGI = Asynchronous Server Gateway Interface.
+
+--reload = The --reload option enables the debug mode so that any changes in app.pywill be automatically reflected and 
+	    the display on the client browser will be automatically refreshed.
+
+Use of MyPy static type checker can detect such errors = pip3 install mypy
+
+
+validation :
+	gt − greater than
+
+	ge − greater than or equal
+
+	lt − less than
+
+	le − less than or equal
+
+pydantic for validation
