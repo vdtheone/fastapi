@@ -10,41 +10,25 @@ from pydantic import BaseModel, Field
 app = FastAPI()
 
 
-data = []
-class Book(BaseModel):
-   id: int
-   title: str
-   author: str
-   publisher: str
+class supplier(BaseModel):
+   supplierID:int
+   supplierName:str
+
+class product(BaseModel):
+   productID:int
+   prodname:str
+   price:int
+   supp:supplier
+
+class customer(BaseModel):
+   custID:int
+   custname:str
+   prod:Tuple[product]
 
 
-@app.post("/book")
-def add_book(book: Book):
-   data.append(book.model_dump())
-   return data
-
-
-@app.get("/list")
-def get_books():
-   return data
-
-
-@app.get("/book/{id}")
-def get_book(id: int):
-   id = id - 1
-   return data[id]
-
-
-@app.put("/book/{id}")
-def add_book(id: int, book: Book):
-   data[id-1] = book
-   return data
-
-
-@app.delete("/book/{id}")
-def delete_book(id: int):
-   data.pop(id-1)
-   return data
+@app.post('/invoice')
+async def getInvoice(c1:customer):
+   return c1
 
 
 
